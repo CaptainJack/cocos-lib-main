@@ -41,22 +41,8 @@ export class Scene extends Component implements SceneInterface {
 		}
 	}
 	
-	public addLayer(): Node {
-		const node = new Node()
-		const widget = node.addComponent(Widget)
-		
-		widget.isAlignTop = true
-		widget.isAlignBottom = true
-		widget.isAlignLeft = true
-		widget.isAlignRight = true
-		
-		widget.top = 0
-		widget.bottom = 0
-		widget.left = 0
-		widget.right = 0
-		
-		this._layers.addChild(node)
-		return node
+	public getLayer(name: string): Node {
+		return this._layers.getChildByName(name)
 	}
 	
 	public catchError(error: any) {

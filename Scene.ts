@@ -12,7 +12,7 @@ export interface Scene {
 	
 	unlock()
 	
-	addLayer(): Node
+	getLayer(name: string): Node
 	
 	showError(header: string, message?: string)
 	

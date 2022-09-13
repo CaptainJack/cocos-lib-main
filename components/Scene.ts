@@ -145,7 +145,7 @@ abstract class SceneContentSwitch {
 	
 	protected constructor(public curtain: string) {}
 	
-	abstract run(layer: Node, previous: Array<Node>)
+	abstract run(layer: Node, nodes: Array<Node>)
 	
 	protected removePreviousLast(list: Array<Node>) {
 		const i = list.length - 1
@@ -180,13 +180,14 @@ class SceneContentSwitch_Add extends SceneContentSwitch {
 		super(curtain)
 	}
 	
-	public run(layer: Node, previous: Array<Node>) {
+	public run(layer: Node, nodes: Array<Node>) {
 		const node = js.isString(this._node) ? createNodeFromPrefab(this._node as string) : this._node as Node
 		node.name = this._name
 		
 		if (this._call) this._call(node)
 		
 		layer.addChild(node)
+		nodes.push(node)
 	}
 }
 
@@ -202,11 +203,11 @@ class SceneContentSwitch_Replace extends SceneContentSwitch_Add {
 		super(name, node, init, curtain)
 	}
 	
-	public run(layer: Node, previous: Array<Node>) {
-		if (this._unto) this.removePreviousUnto(previous, this._unto)
-		else this.removePreviousLast(previous)
+	public run(layer: Node, nodes: Array<Node>) {
+		if (this._unto) this.removePreviousUnto(nodes, this._unto)
+		else this.removePreviousLast(nodes)
 		
-		super.run(layer, previous)
+		super.run(layer, nodes)
 	}
 }
 

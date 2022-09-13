@@ -23,9 +23,9 @@ export interface Scene {
 export interface SceneContent {
 	add(name: string, node: string | Node, on?: (node: Node) => void, curtain?: string)
 	
-	replace(name: string, node: string | Node, on?: (node: Node) => void, curtain?: string)
+	replace(name: string, node: string | Node, on?: (node: Node) => void, unto?: string, curtain?: string)
 	
-	revert(name?: string, on?: () => void, curtain?: string)
+	revert(unto?: string, on?: () => void, curtain?: string)
 }
 
 export abstract class SceneCurtain extends Component {

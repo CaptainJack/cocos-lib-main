@@ -1,4 +1,4 @@
-import {_decorator, Component, instantiate, js, Label, Node, Prefab, Widget} from 'cc'
+import {_decorator, Component, instantiate, js, Label, Node, Prefab} from 'cc'
 import {Scene as SceneInterface, SceneContent, SceneCurtain} from '../Scene'
 import {createNodeFromPrefab, restartApp} from '../_tools'
 
@@ -83,16 +83,16 @@ class SceneContentImpl implements SceneContent {
 		this._nodes.push(this._contentLayer.children[0])
 	}
 	
-	public add(name: string, node: string | Node, init?: (node: Node) => void, curtain?: string) {
-		this.switchContent(new SceneContentSwitch_Add(name, node, init, curtain))
+	public add(name: string, node: string | Node, on?: (node: Node) => void, curtain?: string) {
+		this.switchContent(new SceneContentSwitch_Add(name, node, on, curtain))
 	}
 	
-	public replace(name: string, node: string | Node, init?: (node: Node) => void, unto?: string, curtain?: string) {
-		this.switchContent(new SceneContentSwitch_Replace(name, node, init, curtain, unto))
+	public replace(name: string, node: string | Node, on?: (node: Node) => void, unto?: string, curtain?: string) {
+		this.switchContent(new SceneContentSwitch_Replace(name, node, on, curtain, unto))
 	}
 	
-	public revert(unto?: string, curtain?: string) {
-		this.switchContent(new SceneContentSwitch_Revert(curtain, unto))
+	public revert(unto?: string, on?: () => void, curtain?: string) {
+		this.switchContent(new SceneContentSwitch_Revert(curtain, on, unto))
 	}
 	
 	private switchContent(s: SceneContentSwitch) {
@@ -174,7 +174,7 @@ class SceneContentSwitch_Add extends SceneContentSwitch {
 	constructor(
 		private _name: string,
 		private _node: string | Node,
-		private _init?: (node: Node) => void,
+		private _call?: (node: Node) => void,
 		curtain?: string
 	) {
 		super(curtain)
@@ -183,8 +183,8 @@ class SceneContentSwitch_Add extends SceneContentSwitch {
 	public run(layer: Node, previous: Array<Node>) {
 		const node = js.isString(this._node) ? createNodeFromPrefab(this._node as string) : this._node as Node
 		node.name = this._name
-
-		if (this._init) this._init(node)
+		
+		if (this._call) this._call(node)
 		
 		layer.addChild(node)
 	}
@@ -214,6 +214,7 @@ class SceneContentSwitch_Revert extends SceneContentSwitch {
 	
 	constructor(
 		curtain: string,
+		private _call: () => void,
 		private _unto: string
 	) {
 		super(curtain)
@@ -222,6 +223,8 @@ class SceneContentSwitch_Revert extends SceneContentSwitch {
 	public run(layer: Node, previous: Array<Node>) {
 		if (this._unto) this.removePreviousUnto(previous, this._unto)
 		else this.removePreviousLast(previous)
+		
+		if (this._call) this._call()
 		
 		layer.addChild(previous[previous.length - 1])
 	}

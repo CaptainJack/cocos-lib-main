@@ -1,4 +1,5 @@
 import {_decorator, AssetManager, assetManager, Component, JsonAsset, Label, ProgressBar, resources, sys} from 'cc'
+import {SceneVersatile} from '../Scene'
 
 @_decorator.ccclass('Boot')
 @_decorator.menu('lib/Boot')
@@ -14,12 +15,7 @@ export class Boot extends Component {
 	@_decorator.property({type: Label, visible: true})
 	private _versionLabel: Label
 	
-	private loading: Array<LoadingPart> = [
-		new ConfigLoadingPart(this, 0.5),
-		// new BundleLoadingPart(this, 0.20, 'resources'),
-		new BundleLoadingPart(this, 0.80, 'core'),
-		new InitLoadingPart(this, 1)
-	]
+	private _loading: Array<LoadingPart> = []
 	
 	private _progressValue: number = 0
 	private _progressPrevious: number = 0
@@ -33,11 +29,11 @@ export class Boot extends Component {
 		this._progressPrevious = this._progressCurrent
 		this.drawProgress(this._progressPrevious)
 		
-		if (this.loading.length == 0) {
+		if (this._loading.length == 0) {
 			this.complete()
 		}
 		else {
-			const part = this.loading.shift()
+			const part = this._loading.shift()
 			this._progressCurrent = part.percent
 			part.run()
 		}
@@ -64,6 +60,19 @@ export class Boot extends Component {
 	}
 	
 	protected onLoad() {
+		
+		this._loading.push(new ConfigLoadingPart(this, 0.05))
+		
+		if (scene.versatile === SceneVersatile.ABSENT) {
+			this._loading.push(new BundleLoadingPart(this, 0.80, 'core'))
+		}
+		else{
+			this._loading.push(new BundleLoadingPart(this, 0.60, 'core'))
+			this._loading.push(new BundleLoadingPart(this, 0.80, 'core-' + SceneVersatile.name(scene.versatile)))
+		}
+		
+		this._loading.push(new InitLoadingPart(this, 1))
+		
 		if (this._progressLabel) {
 			this._progressLabelPattern = this._progressLabel.string
 		}

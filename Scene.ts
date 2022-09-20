@@ -1,4 +1,4 @@
-import {Component, Node} from 'cc'
+import {ccenum, Component, Node} from 'cc'
 
 declare global {
 	const scene: Scene
@@ -7,6 +7,7 @@ declare global {
 export interface Scene {
 	readonly node: Node
 	readonly content: SceneContent
+	readonly versatile: SceneVersatile
 	
 	lock()
 	
@@ -31,3 +32,24 @@ export interface SceneContent {
 export abstract class SceneCurtain extends Component {
 	abstract run(onClose: () => void, onOpen: () => void)
 }
+
+export enum SceneVersatile {
+	ABSENT,
+	PORTRAIT,
+	LANDSCAPE
+}
+
+export namespace SceneVersatile {
+	export function name(v: SceneVersatile): string {
+		switch (v) {
+			case SceneVersatile.ABSENT:
+				return null
+			case SceneVersatile.PORTRAIT:
+				return 'portrait'
+			case SceneVersatile.LANDSCAPE:
+				return 'landscape'
+		}
+	}
+}
+
+ccenum(SceneVersatile)

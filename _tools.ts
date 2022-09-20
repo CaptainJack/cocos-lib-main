@@ -1,4 +1,5 @@
-import {assetManager, game, instantiate, Node, Prefab, resources, sys} from 'cc'
+import {assetManager, game, instantiate, Node, Prefab, sys} from 'cc'
+import {SceneVersatile} from './Scene'
 
 export function restartApp() {
 	if (sys.isNative) {
@@ -10,20 +11,25 @@ export function restartApp() {
 	}
 }
 
-export function createNodeFromPrefab(prefab: string): Node {
-	if (prefab === undefined || prefab === null || prefab == '') throw new Error(`Empty prefab name`)
+export function createNodeFromPrefab(path: string): Node {
+	if (path === undefined || path === null || path == '') throw new Error(`Empty prefab name`)
+	const i = path.indexOf(':')
+	let prefab: Prefab
 	
-	if (prefab.indexOf(':') < 0) {
-		prefab = 'core:' + prefab
+	if (i > 0) {
+		prefab = assetManager.getBundle(path.substring(0, i)).get(path.substring(i + 1), Prefab)
+	}
+	else if (scene.versatile === SceneVersatile.ABSENT) {
+		prefab = assetManager.getBundle('core').get(path, Prefab)
+	}
+	else {
+		prefab = assetManager.getBundle('core-' + SceneVersatile.name(scene.versatile)).get(path, Prefab)
+		if (!prefab) {
+			prefab = assetManager.getBundle('core').get(path, Prefab)
+		}
 	}
 	
-	const p = prefab.split(':')
+	if (!prefab) throw new Error(`Prefab '${path}' is not exists`)
 	
-	const bundle = assetManager.getBundle(p[0])
-	if (!bundle) throw new Error(`Bundle '${p[0]}' is not exists`)
-	
-	const pr = bundle.get(p[1], Prefab)
-	if (!pr) throw new Error(`Prefab '${prefab}' is not exists`)
-	
-	return instantiate(pr)
+	return instantiate(prefab)
 }

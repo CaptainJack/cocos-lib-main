@@ -1,11 +1,11 @@
-import {_decorator, Component, instantiate, js, Label, Node, Prefab} from 'cc'
-import {Scene as SceneInterface, SceneContent, SceneCurtain} from '../Scene'
+import {_decorator, Component, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, sys, view} from 'cc'
+import {Scene, SceneContent, SceneCurtain, SceneVersatile} from '../Scene'
 import {createNodeFromPrefab, restartApp} from '../_tools'
 
-@_decorator.ccclass('Scene')
-@_decorator.menu('lib/Scene')
-export class Scene extends Component implements SceneInterface {
-	
+@_decorator.ccclass('Canvas')
+@_decorator.menu('lib/Canvas')
+@_decorator.disallowMultiple
+export class Canvas extends Component implements Scene {
 	public content: SceneContent
 	
 	private _layers: Node
@@ -14,7 +14,20 @@ export class Scene extends Component implements SceneInterface {
 	private _lockCount: number = 0
 	
 	@_decorator.property({type: Prefab, visible: true})
-	private _defaultCurtain: Prefab
+	private _curtain: Prefab
+	
+	@_decorator.property({type: SceneVersatile, visible: true})
+	private _versatile: SceneVersatile = SceneVersatile.ABSENT
+	
+	@_decorator.property({visible: true})
+	private _versatileWidth: number = 0
+	
+	@_decorator.property({visible: true})
+	private _versatileHeight: number = 0
+	
+	public get versatile(): SceneVersatile {
+		return this._versatile
+	}
 	
 	public showError(header: string, message?: string) {
 		if (this._error.active) {
@@ -53,6 +66,21 @@ export class Scene extends Component implements SceneInterface {
 	protected onLoad() {
 		window['scene'] = this
 		
+		switch (this._versatile) {
+			case SceneVersatile.PORTRAIT:
+				view.setOrientation(macro.ORIENTATION_PORTRAIT)
+				view.setDesignResolutionSize(this._versatileWidth, this._versatileHeight, ResolutionPolicy.FIXED_WIDTH)
+				break
+			case SceneVersatile.LANDSCAPE:
+				view.setOrientation(macro.ORIENTATION_LANDSCAPE)
+				view.setDesignResolutionSize(this._versatileWidth, this._versatileHeight, ResolutionPolicy.FIXED_HEIGHT)
+				break
+		}
+		
+		if (sys.isBrowser) {
+			view.resizeWithBrowserSize(true)
+		}
+		
 		this._layers = this.node.getChildByName('layers')
 		this._lock = this.node.getChildByName('lock')
 		this._error = this.node.getChildByName('error')
@@ -62,10 +90,10 @@ export class Scene extends Component implements SceneInterface {
 		this.content = new SceneContentImpl(
 			this._layers.getChildByName('content'),
 			this.node.getChildByName('curtain'),
-			this._defaultCurtain
+			this._curtain
 		)
 		
-		this._defaultCurtain = null
+		this._curtain = null
 	}
 }
 

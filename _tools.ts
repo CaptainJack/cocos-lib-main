@@ -17,7 +17,8 @@ export function createNodeFromPrefab(path: string): Node {
 	let prefab: Prefab
 	
 	if (i > 0) {
-		prefab = assetManager.getBundle(path.substring(0, i)).get(path.substring(i + 1), Prefab)
+		const bundle = assetManager.getBundle(path.substring(0, i))
+		prefab = bundle ? bundle.get(path.substring(i + 1), Prefab) : null
 	}
 	else if (scene.versatile === SceneVersatile.ABSENT) {
 		prefab = assetManager.getBundle('core').get(path, Prefab)

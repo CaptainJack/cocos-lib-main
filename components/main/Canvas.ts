@@ -1,17 +1,20 @@
-import {_decorator, Component, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, sys, view} from 'cc'
-import {Scene, SceneContent, SceneCurtain, SceneVersatile} from '../Scene'
-import {createNodeFromPrefab, restartApp} from '../_tools'
+import {_decorator, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, sys, view} from 'cc'
+import {Scene, SceneContent, SceneCurtain, SceneVersatile} from '../../Scene'
+import {createNodeFromPrefab, restartApp} from '../../_tools'
+import {NormalizedComponent} from '../NormalizedComponent'
 
 @_decorator.ccclass('Canvas')
 @_decorator.menu('lib/Canvas')
 @_decorator.disallowMultiple
-export class Canvas extends Component implements Scene {
+export class Canvas extends NormalizedComponent implements Scene {
 	public content: SceneContent
 	
-	private _layers: Node
 	private _lock: Node
 	private _error: Node
 	private _lockCount: number = 0
+	
+	@_decorator.property({type: Node, visible: true})
+	private _layers: Node
 	
 	@_decorator.property({type: Prefab, visible: true})
 	private _curtain: Prefab
@@ -64,6 +67,8 @@ export class Canvas extends Component implements Scene {
 	}
 	
 	protected onLoad() {
+		super.onLoad()
+		
 		window['scene'] = this
 		
 		switch (this._versatile) {
@@ -74,14 +79,19 @@ export class Canvas extends Component implements Scene {
 			case SceneVersatile.LANDSCAPE:
 				view.setOrientation(macro.ORIENTATION_LANDSCAPE)
 				view.setDesignResolutionSize(this._versatileWidth, this._versatileHeight, ResolutionPolicy.FIXED_HEIGHT)
+				if (sys.isBrowser) {
+					view.resizeWithBrowserSize(true)
+					window.addEventListener('resize', () => {
+						// @ts-ignore
+						view._updateAdaptResult()
+					})
+				}
 				break
 		}
 		
-		if (sys.isBrowser) {
-			view.resizeWithBrowserSize(true)
+		if (!this._layers) {
+			this._layers = this.node.getChildByPath('layers')
 		}
-		
-		this._layers = this.node.getChildByName('layers')
 		this._lock = this.node.getChildByName('lock')
 		this._error = this.node.getChildByName('error')
 		

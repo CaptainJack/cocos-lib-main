@@ -40,7 +40,7 @@ export enum SceneVersatile {
 }
 
 export namespace SceneVersatile {
-	export function name(v: SceneVersatile): string {
+	export function nameLower(v: SceneVersatile): string {
 		switch (v) {
 			case SceneVersatile.ABSENT:
 				return null
@@ -48,6 +48,17 @@ export namespace SceneVersatile {
 				return 'portrait'
 			case SceneVersatile.LANDSCAPE:
 				return 'landscape'
+		}
+	}
+	
+	export function nameCamel(v: SceneVersatile): string {
+		switch (v) {
+			case SceneVersatile.ABSENT:
+				return null
+			case SceneVersatile.PORTRAIT:
+				return 'Portrait'
+			case SceneVersatile.LANDSCAPE:
+				return 'Landscape'
 		}
 	}
 }

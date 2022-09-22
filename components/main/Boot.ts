@@ -70,7 +70,7 @@ export class Boot extends NormalizedComponent {
 		}
 		else {
 			this._loading.push(new BundleLoadingPart(this, 0.60, 'core'))
-			this._loading.push(new BundleLoadingPart(this, 0.80, 'core-' + SceneVersatile.name(scene.versatile)))
+			this._loading.push(new BundleLoadingPart(this, 0.80, 'core-' + SceneVersatile.nameLower(scene.versatile)))
 		}
 		
 		this._loading.push(new InitLoadingPart(this, 1))

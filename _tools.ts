@@ -23,7 +23,7 @@ export function createNodeFromPrefab(path: string): Node {
 		prefab = assetManager.getBundle('core').get(path, Prefab)
 	}
 	else {
-		prefab = assetManager.getBundle('core-' + SceneVersatile.name(scene.versatile)).get(path, Prefab)
+		prefab = assetManager.getBundle('core-' + SceneVersatile.nameLower(scene.versatile)).get(path, Prefab)
 		if (!prefab) {
 			prefab = assetManager.getBundle('core').get(path, Prefab)
 		}

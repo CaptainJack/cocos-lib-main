@@ -1,4 +1,4 @@
-import {_decorator, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, sys, view} from 'cc'
+import {_decorator, instantiate, js, Label, macro, Node, NodeEventType, Prefab, ResolutionPolicy, screen, sys, UITransform, view} from 'cc'
 import {Scene, SceneContent, SceneCurtain, SceneVersatile} from '../../Scene'
 import {createNodeFromPrefab, restartApp} from '../../_tools'
 import {NormalizedComponent} from '../NormalizedComponent'
@@ -82,8 +82,13 @@ export class Canvas extends NormalizedComponent implements Scene {
 				if (sys.isBrowser) {
 					view.resizeWithBrowserSize(true)
 					window.addEventListener('resize', () => {
-						// @ts-ignore
-						view._updateAdaptResult()
+						if (!screen.fullScreen()) {
+							const style = (document.getElementById('GameDiv') as HTMLDivElement).style
+							style.removeProperty('width')
+							style.removeProperty('height')
+							// @ts-ignore
+							view._updateAdaptResult()
+						}
 					})
 				}
 				break
@@ -104,6 +109,10 @@ export class Canvas extends NormalizedComponent implements Scene {
 		)
 		
 		this._curtain = null
+		
+		this._layers.on(NodeEventType.SIZE_CHANGED, () => {
+			console.log(this._layers.getComponent(UITransform).width)
+		})
 	}
 }
 

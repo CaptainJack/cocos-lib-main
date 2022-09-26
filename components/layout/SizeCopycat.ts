@@ -117,7 +117,7 @@ export class SizeCopycat extends NormalizedComponent {
 			if (this._maxWidth > 0 && size.x > this._maxWidth) size.x = this._maxWidth
 			if (this._maxHeight > 0 && size.y > this._maxHeight) size.y = this._maxHeight
 			
-			if (this._minWidth > 0 && size.x < this._minWidth) size.x = this._minHeight
+			if (this._minWidth > 0 && size.x < this._minWidth) size.x = this._minWidth
 			if (this._minHeight > 0 && size.y < this._minHeight) size.y = this._minHeight
 			
 			if (this._vertical && this._horizontal) {

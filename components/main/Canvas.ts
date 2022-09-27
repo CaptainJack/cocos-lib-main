@@ -1,5 +1,5 @@
 import {_decorator, instantiate, js, Label, macro, Node, NodeEventType, Prefab, ResolutionPolicy, screen, sys, UITransform, view} from 'cc'
-import {Scene, SceneContent, SceneCurtain, SceneVersatile} from '../../Scene'
+import {Scene, SceneContent, SceneCurtain, SceneOrientation} from '../../Scene'
 import {createNodeFromPrefab, restartApp} from '../../_tools'
 import {NormalizedComponent} from '../NormalizedComponent'
 
@@ -19,8 +19,8 @@ export class Canvas extends NormalizedComponent implements Scene {
 	@_decorator.property({type: Prefab, visible: true})
 	private _curtain: Prefab
 	
-	@_decorator.property({type: SceneVersatile, visible: true})
-	private _versatile: SceneVersatile = SceneVersatile.ABSENT
+	@_decorator.property({type: SceneOrientation, visible: true})
+	private _versatile: SceneOrientation = SceneOrientation.ABSENT
 	
 	@_decorator.property({visible: true})
 	private _versatileWidth: number = 0
@@ -28,7 +28,7 @@ export class Canvas extends NormalizedComponent implements Scene {
 	@_decorator.property({visible: true})
 	private _versatileHeight: number = 0
 	
-	public get versatile(): SceneVersatile {
+	public get orientation(): SceneOrientation {
 		return this._versatile
 	}
 	
@@ -72,20 +72,25 @@ export class Canvas extends NormalizedComponent implements Scene {
 		window['scene'] = this
 		
 		switch (this._versatile) {
-			case SceneVersatile.PORTRAIT:
+			case SceneOrientation.PORTRAIT:
 				view.setOrientation(macro.ORIENTATION_PORTRAIT)
 				view.setDesignResolutionSize(this._versatileWidth, this._versatileHeight, ResolutionPolicy.FIXED_WIDTH)
 				break
-			case SceneVersatile.LANDSCAPE:
+			case SceneOrientation.LANDSCAPE:
 				view.setOrientation(macro.ORIENTATION_LANDSCAPE)
 				view.setDesignResolutionSize(this._versatileWidth, this._versatileHeight, ResolutionPolicy.FIXED_HEIGHT)
 				if (sys.isBrowser) {
+					const style = (document.getElementById('GameDiv') as HTMLDivElement).style
+					const originWidth = style.width
+					const originHeight = style.height
+					
 					view.resizeWithBrowserSize(true)
 					window.addEventListener('resize', () => {
 						if (!screen.fullScreen()) {
-							const style = (document.getElementById('GameDiv') as HTMLDivElement).style
 							style.removeProperty('width')
 							style.removeProperty('height')
+							if (originWidth) style.width = originWidth
+							if (originHeight) style.height = originHeight
 							// @ts-ignore
 							view._updateAdaptResult()
 						}

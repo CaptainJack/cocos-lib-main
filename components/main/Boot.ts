@@ -1,5 +1,5 @@
 import {_decorator, AssetManager, assetManager, JsonAsset, Label, ProgressBar, resources, sys} from 'cc'
-import {SceneVersatile} from '../../Scene'
+import {SceneOrientation} from '../../Scene'
 import {NormalizedComponent} from '../NormalizedComponent'
 
 @_decorator.ccclass('Boot')
@@ -65,12 +65,12 @@ export class Boot extends NormalizedComponent {
 		
 		this._loading.push(new ConfigLoadingPart(this, 0.05))
 		
-		if (scene.versatile === SceneVersatile.ABSENT) {
+		if (scene.orientation === SceneOrientation.ABSENT) {
 			this._loading.push(new BundleLoadingPart(this, 0.80, 'core'))
 		}
 		else {
 			this._loading.push(new BundleLoadingPart(this, 0.60, 'core'))
-			this._loading.push(new BundleLoadingPart(this, 0.80, 'core-' + SceneVersatile.nameLower(scene.versatile)))
+			this._loading.push(new BundleLoadingPart(this, 0.80, 'core-' + SceneOrientation.nameLower(scene.orientation)))
 		}
 		
 		this._loading.push(new InitLoadingPart(this, 1))

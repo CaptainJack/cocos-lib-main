@@ -1,5 +1,5 @@
 import {assetManager, game, instantiate, Node, Prefab, sys} from 'cc'
-import {SceneVersatile} from './Scene'
+import {SceneOrientation} from './Scene'
 
 export function restartApp() {
 	if (sys.isNative) {
@@ -20,11 +20,11 @@ export function createNodeFromPrefab(path: string): Node {
 		const bundle = assetManager.getBundle(path.substring(0, i))
 		prefab = bundle ? bundle.get(path.substring(i + 1), Prefab) : null
 	}
-	else if (scene.versatile === SceneVersatile.ABSENT) {
+	else if (scene.orientation === SceneOrientation.ABSENT) {
 		prefab = assetManager.getBundle('core').get(path, Prefab)
 	}
 	else {
-		prefab = assetManager.getBundle('core-' + SceneVersatile.nameLower(scene.versatile)).get(path, Prefab)
+		prefab = assetManager.getBundle('core-' + SceneOrientation.nameLower(scene.orientation)).get(path, Prefab)
 		if (!prefab) {
 			prefab = assetManager.getBundle('core').get(path, Prefab)
 		}

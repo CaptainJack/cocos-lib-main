@@ -7,7 +7,7 @@ declare global {
 export interface Scene {
 	readonly node: Node
 	readonly content: SceneContent
-	readonly versatile: SceneVersatile
+	readonly orientation: SceneOrientation
 	
 	lock()
 	
@@ -33,34 +33,34 @@ export abstract class SceneCurtain extends Component {
 	abstract run(onClose: () => void, onOpen: () => void)
 }
 
-export enum SceneVersatile {
+export enum SceneOrientation {
 	ABSENT,
 	PORTRAIT,
 	LANDSCAPE
 }
 
-export namespace SceneVersatile {
-	export function nameLower(v: SceneVersatile): string {
+export namespace SceneOrientation {
+	export function nameLower(v: SceneOrientation): string {
 		switch (v) {
-			case SceneVersatile.ABSENT:
+			case SceneOrientation.ABSENT:
 				return null
-			case SceneVersatile.PORTRAIT:
+			case SceneOrientation.PORTRAIT:
 				return 'portrait'
-			case SceneVersatile.LANDSCAPE:
+			case SceneOrientation.LANDSCAPE:
 				return 'landscape'
 		}
 	}
 	
-	export function nameCamel(v: SceneVersatile): string {
+	export function nameCamel(v: SceneOrientation): string {
 		switch (v) {
-			case SceneVersatile.ABSENT:
+			case SceneOrientation.ABSENT:
 				return null
-			case SceneVersatile.PORTRAIT:
+			case SceneOrientation.PORTRAIT:
 				return 'Portrait'
-			case SceneVersatile.LANDSCAPE:
+			case SceneOrientation.LANDSCAPE:
 				return 'Landscape'
 		}
 	}
 }
 
-ccenum(SceneVersatile)
+ccenum(SceneOrientation)

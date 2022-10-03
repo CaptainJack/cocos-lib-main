@@ -1,4 +1,4 @@
-import {_decorator, instantiate, js, Label, macro, Node, NodeEventType, Prefab, ResolutionPolicy, screen, sys, UITransform, view} from 'cc'
+import {_decorator, instantiate, js, Label, macro, Mask, Node, NodeEventType, Prefab, ResolutionPolicy, screen, sys, view} from 'cc'
 import {Scene, SceneContent, SceneCurtain, SceneOrientation} from '../../Scene'
 import {createNodeFromPrefab, restartApp} from '../../_tools'
 import {NormalizedComponent} from '../NormalizedComponent'
@@ -116,7 +116,14 @@ export class Canvas extends NormalizedComponent implements Scene {
 		this._curtain = null
 		
 		this._layers.on(NodeEventType.SIZE_CHANGED, () => {
-			console.log(this._layers.getComponent(UITransform).width)
+			for (const mask of this.getComponentsInChildren(Mask)) {
+				const enabled = mask.enabled
+				mask.enabled = false
+				mask.enabled = true
+				if (!enabled) {
+					this.scheduleOnce(() => mask.enabled = false)
+				}
+			}
 		})
 	}
 }

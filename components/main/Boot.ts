@@ -21,7 +21,6 @@ export class Boot extends NormalizedComponent {
 	private _progressValue: number = 0
 	private _progressPrevious: number = 0
 	private _progressCurrent: number = 0
-	private _progressLabelPattern: string
 	
 	private _contentName: string
 	private _contentPrefab: string
@@ -75,9 +74,6 @@ export class Boot extends NormalizedComponent {
 		
 		this._loading.push(new InitLoadingPart(this, 1))
 		
-		if (this._progressLabel) {
-			this._progressLabelPattern = this._progressLabel.string
-		}
 		
 		this.nextLoadingPart()
 	}
@@ -87,7 +83,7 @@ export class Boot extends NormalizedComponent {
 			this._progressValue = value
 			this._progressBar.progress = value
 			if (this._progressLabel) {
-				this._progressLabel.string = this._progressLabelPattern.replace('$', (value * 100 | 0).toString())
+				this._progressLabel.string = `${value * 100 | 0}%`
 			}
 		}
 	}

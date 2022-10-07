@@ -69,6 +69,9 @@ export class Canvas extends NormalizedComponent implements Scene {
 	protected onLoad() {
 		super.onLoad()
 		
+		const loader = document.getElementById('loader')
+		if (loader) loader.parentElement.removeChild(loader)
+		
 		window['scene'] = this
 		
 		switch (this._versatile) {

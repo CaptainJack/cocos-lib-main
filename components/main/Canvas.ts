@@ -100,15 +100,23 @@ export class Canvas extends NormalizedComponent implements Scene {
 						}
 						
 						for (const mask of this.getComponentsInChildren(Mask)) {
-							const enabled = mask.enabled
-							mask.enabled = false
-							mask.enabled = true
-							if (!enabled) {
-								this.scheduleOnce(() => mask.enabled = false)
+							if (!mask.enabled) {
+								this.scheduleOnce(() => {
+									mask.enabled = true
+									mask.node.active = false
+									this.scheduleOnce(() => {
+										mask.node.active = true
+										this.scheduleOnce(() => {
+											mask.enabled = false
+										}, 0.01)
+									}, 0.01)
+								}, 0.01)
 							}
 						}
+						
 					})
 				}
+				
 				break
 		}
 		

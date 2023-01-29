@@ -1,4 +1,4 @@
-import {_decorator, instantiate, js, Label, macro, Mask, Node, Prefab, ResolutionPolicy, screen, sys, view, widgetManager} from 'cc'
+import {_decorator, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, view, widgetManager} from 'cc'
 import {Scene, SceneContent, SceneCurtain, SceneOrientation} from '../../Scene'
 import {createNodeFromPrefab, restartApp} from '../../_tools'
 import {NormalizedComponent} from '../NormalizedComponent'
@@ -83,42 +83,6 @@ export class Canvas extends NormalizedComponent implements Scene {
 			case SceneOrientation.LANDSCAPE:
 				view.setOrientation(macro.ORIENTATION_LANDSCAPE)
 				view.setDesignResolutionSize(this._versatileWidth, this._versatileHeight, ResolutionPolicy.FIXED_HEIGHT)
-				if (sys.isBrowser) {
-					const style = (document.getElementById('GameDiv') as HTMLDivElement).style
-					const originWidth = style.width
-					const originHeight = style.height
-					
-					view.resizeWithBrowserSize(true)
-					window.addEventListener('resize', () => {
-						if (!screen.fullScreen()) {
-							style.removeProperty('width')
-							style.removeProperty('height')
-							if (originWidth) style.width = originWidth
-							if (originHeight) style.height = originHeight
-							// @ts-ignore
-							view._updateAdaptResult()
-						}
-						
-						for (const mask of this.getComponentsInChildren(Mask)) {
-							if (!mask.enabled) {
-								this.scheduleOnce(() => {
-									if (mask.node) {
-										mask.enabled = true
-										mask.node.active = false
-										this.scheduleOnce(() => {
-											mask.node.active = true
-											this.scheduleOnce(() => {
-												mask.enabled = false
-											}, 0.01)
-										}, 0.01)
-									}
-								}, 0.01)
-							}
-						}
-						
-					})
-				}
-				
 				break
 		}
 		

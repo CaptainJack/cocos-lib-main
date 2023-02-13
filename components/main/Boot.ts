@@ -9,12 +9,10 @@ export class Boot extends NormalizedComponent {
 	
 	public config: any
 	
-	@_decorator.property({type: ProgressBar, visible: true})
 	private _progressBar: ProgressBar
+	
 	@_decorator.property({type: Label, visible: true})
-	private _progressLabel: Label
-	@_decorator.property({type: Label, visible: true})
-	private _versionLabel: Label
+	private _versionLabel: Label = null
 	
 	private _loading: Array<LoadingPart> = []
 	
@@ -62,6 +60,8 @@ export class Boot extends NormalizedComponent {
 	protected onLoad() {
 		super.onLoad()
 		
+		this._progressBar = this.getComponentInChildren(ProgressBar)
+		
 		this._loading.push(new ConfigLoadingPart(this, 0.05))
 		
 		if (scene.orientation === SceneOrientation.ABSENT) {
@@ -82,9 +82,6 @@ export class Boot extends NormalizedComponent {
 		if (value > this._progressValue) {
 			this._progressValue = value
 			this._progressBar.progress = value
-			if (this._progressLabel) {
-				this._progressLabel.string = `${value * 100 | 0}%`
-			}
 		}
 	}
 	
@@ -113,18 +110,19 @@ abstract class LoadingPart {
 class ConfigLoadingPart extends LoadingPart {
 	public run() {
 		resources.load('config-local', JsonAsset, (e, a) => {
-			if (e) resources.load('config', JsonAsset, (e, a) => this.completeEmbedded(e, a))
-			else this.completeEmbedded(e, a)
+			if (e) resources.load('config', JsonAsset, (e, a) => this.completeEmbedded(false, e, a))
+			else this.completeEmbedded(true, e, a)
 		})
 	}
 	
 	
-	private completeEmbedded(e: Error, a: JsonAsset) {
+	private completeEmbedded(local: boolean, e: Error, a: JsonAsset) {
 		if (e) {
 			this.error(new Error('Embedded config loading failed'))
 			return
 		}
 		const data = a.json as any
+		data.local = local
 		
 		if (data.url) {
 			this.boot.progressPart(0.5)

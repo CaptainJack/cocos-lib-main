@@ -1,4 +1,4 @@
-import {_decorator, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, view, widgetManager} from 'cc'
+import {_decorator, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, screen, sys, view, widgetManager} from 'cc'
 import {Scene, SceneContent, SceneCurtain, SceneOrientation} from '../../Scene'
 import {createNodeFromPrefab, restartApp} from '../../_tools'
 import {NormalizedComponent} from '../NormalizedComponent'
@@ -83,6 +83,23 @@ export class Canvas extends NormalizedComponent implements Scene {
 			case SceneOrientation.LANDSCAPE:
 				view.setOrientation(macro.ORIENTATION_LANDSCAPE)
 				view.setDesignResolutionSize(this._versatileWidth, this._versatileHeight, ResolutionPolicy.FIXED_HEIGHT)
+				if (sys.isBrowser) {
+					const element = document.getElementById('GameDiv') as HTMLDivElement
+					const originWidth = element.style.width
+					const originHeight = element.style.height
+					view.resizeWithBrowserSize(true)
+					window.addEventListener('resize', () => {
+						if (!screen.fullScreen()) {
+							element.style.removeProperty('width')
+							element.style.removeProperty('height')
+							if (originWidth) element.style.width = originWidth
+							if (originHeight) element.style.height = originHeight
+							
+							// @ts-ignore
+							view._updateAdaptResult(element.offsetWidth, element.offsetHeight)
+						}
+					})
+				}
 				break
 		}
 		

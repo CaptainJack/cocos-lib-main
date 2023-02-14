@@ -84,19 +84,14 @@ export class Canvas extends NormalizedComponent implements Scene {
 				view.setOrientation(macro.ORIENTATION_LANDSCAPE)
 				view.setDesignResolutionSize(this._versatileWidth, this._versatileHeight, ResolutionPolicy.FIXED_HEIGHT)
 				if (sys.isBrowser) {
-					const element = document.getElementById('GameDiv') as HTMLDivElement
-					const originWidth = element.style.width
-					const originHeight = element.style.height
 					view.resizeWithBrowserSize(true)
+					const element = document.getElementById('GameDiv') as HTMLDivElement
 					window.addEventListener('resize', () => {
 						if (!screen.fullScreen()) {
 							element.style.removeProperty('width')
 							element.style.removeProperty('height')
-							if (originWidth) element.style.width = originWidth
-							if (originHeight) element.style.height = originHeight
-							
 							// @ts-ignore
-							view._updateAdaptResult(element.offsetWidth, element.offsetHeight)
+							view._updateAdaptResult(screen.windowSize.width, screen.windowSize.height)
 						}
 					})
 				}

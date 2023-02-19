@@ -1,5 +1,5 @@
-import {_decorator, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, screen, sys, view, widgetManager} from 'cc'
-import {Scene, SceneContent, SceneCurtain, SceneOrientation} from '../../Scene'
+import {_decorator, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, screen, sys, UITransform, Vec3, view, widgetManager} from 'cc'
+import {Scene, SceneContent, SceneCurtain, SceneOrientation, ScenePoint} from '../../Scene'
 import {createNodeFromPrefab, restartApp} from '../../_tools'
 import {NormalizedComponent} from '../NormalizedComponent'
 
@@ -28,8 +28,14 @@ export class Canvas extends NormalizedComponent implements Scene {
 	@_decorator.property({visible: true})
 	private _versatileHeight: number = 0
 	
+	private points = new Map<ScenePoint, Node>()
+	
 	public get orientation(): SceneOrientation {
 		return this._versatile
+	}
+	
+	public getPointPosition(point: ScenePoint, space: Node): Vec3 {
+		return space.getComponent(UITransform).convertToNodeSpaceAR(this.points.get(point).worldPosition)
 	}
 	
 	public showError(header: string, message?: string) {
@@ -113,6 +119,11 @@ export class Canvas extends NormalizedComponent implements Scene {
 		)
 		
 		this._curtain = null
+		
+		this.points.set(ScenePoint.CENTER_TOP, this.node.getChildByName('point-center-top'))
+		this.points.set(ScenePoint.CENTER_BOTTOM, this.node.getChildByName('point-center-bottom'))
+		this.points.set(ScenePoint.LEFT_CENTER, this.node.getChildByName('point-left-center'))
+		this.points.set(ScenePoint.RIGHT_CENTER, this.node.getChildByName('point-right-center'))
 	}
 }
 

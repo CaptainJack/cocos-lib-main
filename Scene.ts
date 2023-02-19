@@ -1,4 +1,4 @@
-import {ccenum, Component, Node} from 'cc'
+import {ccenum, Component, Node, Vec3} from 'cc'
 
 declare global {
 	const scene: Scene
@@ -18,6 +18,8 @@ export interface Scene {
 	showError(header: string, message?: string)
 	
 	catchError(error: any): void
+	
+	getPointPosition(point: ScenePoint, space: Node): Vec3
 }
 
 
@@ -64,3 +66,11 @@ export namespace SceneOrientation {
 }
 
 ccenum(SceneOrientation)
+
+
+export enum ScenePoint {
+	CENTER_TOP,
+	CENTER_BOTTOM,
+	LEFT_CENTER,
+	RIGHT_CENTER,
+}

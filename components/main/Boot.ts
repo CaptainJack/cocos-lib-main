@@ -168,9 +168,11 @@ class ConfigLoadingPart extends LoadingPart {
 		if (data.bundles) {
 			const bundles = data.bundles
 			const bundleNames = Object.keys(bundles)
+			// @ts-ignore
 			downloader.remoteBundles.push(...bundleNames)
 			
 			for (const bundle of bundleNames) {
+				// @ts-ignore
 				downloader.bundleVers[bundle] = bundles[bundle]
 			}
 		}

@@ -34,3 +34,10 @@ export function createNodeFromPrefab(path: string): Node {
 	
 	return instantiate(prefab)
 }
+
+if (!window['ecw']) {
+	window['ecw'] = {
+		log: () => {},
+		catchError: () => {}
+	}
+}

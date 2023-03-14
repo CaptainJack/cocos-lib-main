@@ -70,7 +70,7 @@ export class Canvas extends NormalizedComponent implements Scene {
 	public catchError(error: any) {
 		console.error(error)
 		this.showError('Uncaught error', error.toString())
-		if (window['ecw']) window['ecw'].catchError(error)
+		ecw.catchError(error)
 	}
 	
 	protected onLoad() {

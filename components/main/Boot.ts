@@ -128,7 +128,7 @@ class ConfigLoadingPart extends LoadingPart {
 			this.boot.progressPart(0.5)
 			
 			this.boot.drawVersion(data.version)
-			const url = `${data.url}?version=${data.version}&platform=${this.defineConfigPlatform()}`
+			const url = `${data.url}?platform=${this.defineConfigPlatform()}`
 			console.debug(`Boot: load config`, url)
 			
 			assetManager.cacheManager && assetManager.cacheManager.removeCache(url)
@@ -160,13 +160,13 @@ class ConfigLoadingPart extends LoadingPart {
 		
 		const downloader = assetManager.downloader
 		
-		if (data.resources) {
+		if (data.bundlesUrl) {
 			// @ts-ignore
-			downloader._remoteServerAddress = data.resources
+			downloader._remoteServerAddress = data.bundlesUrl
 		}
 		
-		if (data.bundles) {
-			const bundles = data.bundles
+		if (data.bundlesVersions) {
+			const bundles = data.bundlesVersions
 			const bundleNames = Object.keys(bundles)
 			// @ts-ignore
 			downloader.remoteBundles.push(...bundleNames)

@@ -68,8 +68,27 @@ export class Canvas extends NormalizedComponent implements Scene {
 	}
 	
 	public catchError(error: any) {
-		console.error(error)
-		this.showError('Uncaught error', error.toString())
+		
+		let errorStr: string
+		
+		if (typeof error === 'string') {
+			errorStr = error
+		}
+		else if (error instanceof Error) {
+			errorStr = error.toString() + '\nstack:\n' + error.stack
+		}
+		else {
+			errorStr = error.constructor.name + '\n' + Object.keys(error).map(k => k + ': ' + error[k]).join('\n')
+		}
+		
+		if (error === errorStr) {
+			console.error(error)
+		}
+		else {
+			console.error(errorStr, error)
+		}
+		
+		this.showError('Uncaught error', errorStr)
 		ecw.catchError(error)
 	}
 	

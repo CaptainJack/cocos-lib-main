@@ -46,7 +46,7 @@ export class Boot extends NormalizedComponent {
 	}
 	
 	public drawVersionBuild(build: string) {
-		this._versionLabel.string += '-' + build
+		this._versionLabel.string += (this._versionLabel.string.length > 0 ? '-' : '') + build
 	}
 	
 	public finalize(onComplete: () => void) {

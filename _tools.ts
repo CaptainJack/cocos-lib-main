@@ -17,8 +17,12 @@ export function createNodeFromPrefab(path: string): Node {
 	let prefab: Prefab
 	
 	if (i > 0) {
-		const bundle = assetManager.getBundle(path.substring(0, i))
+		let bundle = assetManager.getBundle(path.substring(0, i))
 		prefab = bundle ? bundle.get(path.substring(i + 1), Prefab) : null
+		if (!prefab) {
+			bundle = assetManager.getBundle(path.substring(0, i) + '-'  + SceneOrientation.nameLower(scene.orientation))
+			prefab = bundle ? bundle.get(path.substring(i + 1), Prefab) : null
+		}
 	}
 	else if (scene.orientation === SceneOrientation.ABSENT) {
 		prefab = assetManager.getBundle('core').get(path, Prefab)

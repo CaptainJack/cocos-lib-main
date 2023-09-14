@@ -1,9 +1,10 @@
 import {NormalizedComponent} from '../NormalizedComponent'
-import {_decorator, Node, NodeEventType, UITransform, widgetManager} from 'cc'
+import {_decorator, Node, NodeEventType, Sprite, UITransform, widgetManager} from 'cc'
 
 @_decorator.ccclass('SizeCopycat')
 @_decorator.menu('lib/layout/SizeCopycat')
 @_decorator.disallowMultiple(true)
+@_decorator.executeInEditMode
 export class SizeCopycat extends NormalizedComponent {
 	@_decorator.property(Node)
 	private _target: Node
@@ -26,6 +27,11 @@ export class SizeCopycat extends NormalizedComponent {
 	@_decorator.property
 	private _minHeight: number = 0
 	
+	@_decorator.property
+	private _paddingWidth: number = 0
+	
+	@_decorator.property
+	private _paddingHeight: number = 0
 	
 	//
 	
@@ -109,10 +115,34 @@ export class SizeCopycat extends NormalizedComponent {
 		this.updateSize()
 	}
 	
+	@_decorator.property
+	public get paddingWidth(): number {
+		return this._paddingWidth
+	}
+	
+	public set paddingWidth(value: number) {
+		this._paddingWidth = value
+		this.updateSize()
+	}
+	
+	@_decorator.property
+	public get paddingHeight(): number {
+		return this._paddingHeight
+	}
+	
+	public set paddingHeight(value: number) {
+		this._paddingHeight = value
+		this.updateSize()
+	}
+	
+	
 	public updateSize() {
 		if (this._target) {
 			const size = this._target.getComponent(UITransform).contentSize.clone()
 			const t = this.getComponent(UITransform)
+			
+			size.x += this._paddingWidth
+			size.y += this._paddingHeight
 			
 			if (this._maxWidth > 0 && size.x > this._maxWidth) size.x = this._maxWidth
 			if (this._maxHeight > 0 && size.y > this._maxHeight) size.y = this._maxHeight
@@ -130,6 +160,10 @@ export class SizeCopycat extends NormalizedComponent {
 				t.width = size.x
 			}
 			
+			const sprite = this.node.getComponent(Sprite)
+			if (sprite) {
+				sprite.updateRenderer()
+			}
 			widgetManager.onResized()
 		}
 	}

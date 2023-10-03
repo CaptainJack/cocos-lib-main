@@ -4,7 +4,7 @@ import {_decorator, Node, NodeEventType, Sprite, UITransform, widgetManager} fro
 @_decorator.ccclass('SizeCopycat')
 @_decorator.menu('lib/layout/SizeCopycat')
 @_decorator.disallowMultiple(true)
-export class SizeCopycatDraft extends NormalizedComponent {
+export class SizeCopycat extends NormalizedComponent {
 	@_decorator.property(Node)
 	private _target: Node
 	

@@ -1,4 +1,4 @@
-import {_decorator, instantiate, js, Label, macro, Node, Prefab, ResolutionPolicy, screen, sys, UITransform, Vec3, view, widgetManager} from 'cc'
+import {_decorator, instantiate, js, Label, macro, Mask, Node, Prefab, ResolutionPolicy, screen, sys, UITransform, Vec3, view, widgetManager} from 'cc'
 import {Scene, SceneContent, SceneCurtain, SceneOrientation, ScenePoint} from '../../Scene'
 import {createNodeFromPrefab, restartApp} from '../../_tools'
 import {NormalizedComponent} from '../NormalizedComponent'
@@ -117,6 +117,23 @@ export class Canvas extends NormalizedComponent implements Scene {
 							element.style.removeProperty('height')
 							// @ts-ignore
 							view._updateAdaptResult(screen.windowSize.width, screen.windowSize.height)
+						}
+						
+						for (const mask of this.getComponentsInChildren(Mask)) {
+							if (!mask.enabled) {
+								this.scheduleOnce(() => {
+									if (mask.node) {
+										mask.enabled = true
+										mask.node.active = false
+										this.scheduleOnce(() => {
+											mask.node.active = true
+											this.scheduleOnce(() => {
+												mask.enabled = false
+											}, 0.01)
+										}, 0.01)
+									}
+								}, 0.01)
+							}
 						}
 					})
 				}
